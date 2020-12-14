@@ -1,11 +1,11 @@
 import Head from "next/head";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Stage, Layer, Image, Text, Rect } from "react-konva";
 import useImage from "use-image";
 import Layout from "../components/layout";
 
-const MAP_HEIGHT = 2048;
-const MAP_WIDTH = 2048;
+const MAP_HEIGHT = 1024;
+const MAP_WIDTH = 1024;
 
 const MapImage = () => {
   const [image] = useImage("/images/FNBRC2S1Map.png");
@@ -21,12 +21,21 @@ const stageBoundsFunc = (pos) => {
 
 const CanvasMap = () => {
   if (typeof window === "undefined") return null;
+
   const [pos, setPos] = useState({ x: 0, y: 0 });
+  const [{ width, height }, setBounds] = useState({ width: window.innerWidth, height: window.innerHeight });
+  useEffect(() => {
+    const listener = window.addEventListener("resize", () => {
+      console.log(window);
+      setBounds({ width: window.innerWidth, height: window.innerHeight });
+    });
+    return () => window.removeEventListener(listener);
+  }, []);
 
   return (
     <Stage
-      width={window.innerWidth}
-      height={window.innerHeight}
+      width={width}
+      height={height}
       dragBoundFunc={stageBoundsFunc}
       onClick={(e) => console.log(e)}
       onMouseMove={(e) => {
