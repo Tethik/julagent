@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Stage, Layer, Image, Text, Rect, Shape, Circle } from "react-konva";
 import useImage from "use-image";
 import Layout from "../components/layout";
@@ -134,15 +134,58 @@ const staticShapes = [
   },
 ];
 
+const Zone = ({ edges, bounds }) => {
+  const shapeRef = useRef(null);
+  const textRef = useRef(null);
+
+  useEffect(() => {
+    shapeRef.current && shapeRef.current.cache({ ...edges[0], ...bounds });
+  }, [shapeRef, bounds, edges]);
+
+  useEffect(() => {
+    textRef.current && textRef.current.cache();
+  }, [textRef]);
+
+  return (
+    <>
+      <Shape
+        ref={shapeRef}
+        sceneFunc={(context, shape) => {
+          context.beginPath();
+          context.moveTo(edges[0].x, edges[0].y);
+          edges.slice(1).forEach((edge) => {
+            context.lineTo(edge.x, edge.y);
+          });
+          context.closePath();
+          // (!) Konva specific method, it is very important
+          context.fillStrokeShape(shape);
+        }}
+        fill="#333333"
+        opacity={0.6}
+        stroke="black"
+        strokeWidth={2}
+      />
+      <Text
+        ref={textRef}
+        align={"center"}
+        text={"okänd"}
+        x={edges.map((e) => e.x).reduce((p, v) => Math.min(p, v)) + 10}
+        y={edges.map((e) => e.y).reduce((p, v) => p + v / edges.length, 0)}
+      />
+    </>
+  );
+};
+
 const CanvasMap = () => {
   if (typeof window === "undefined") return null;
 
-  const [shapes, setShapes] = useState(staticShapes);
+  const [zones, setZones] = useState(staticShapes);
   const [newShapeEdges, setNewShapeEdges] = useState([]);
   const [drawing, setDrawing] = useState(false);
-  const [{ width, height }, setBounds] = useState({ width: window.innerWidth, height: window.innerHeight });
+  const [bounds, setBounds] = useState({ width: window.innerWidth, height: window.innerHeight });
+  const { width, height } = bounds;
 
-  console.log(shapes);
+  console.log(zones);
 
   const canvasClick = (e) => {
     const pos = e.currentTarget.getPointerPosition();
@@ -163,11 +206,10 @@ const CanvasMap = () => {
       dragBoundFunc={stageBoundsFunc}
       onClick={(e) => drawing && canvasClick(e)}
       draggable
+      transformsEnabled="position"
     >
       <Layer>
         <MapImage />
-      </Layer>
-      <Layer>
         <Rect
           width={100}
           height={10}
@@ -185,29 +227,15 @@ const CanvasMap = () => {
           }}
         />
       </Layer>
+
       <Layer>
-        {shapes.map((shp) => (
-          <Shape
-            sceneFunc={(context, shape) => {
-              context.beginPath();
-              context.moveTo(shp.edges[0].x, shp.edges[0].y);
-              shp.edges.slice(1).forEach((edge) => {
-                context.lineTo(edge.x, edge.y);
-              });
-              context.closePath();
-              // (!) Konva specific method, it is very important
-              context.fillStrokeShape(shape);
-            }}
-            fill="#333333"
-            opacity={0.6}
-            stroke="black"
-            strokeWidth={2}
-          />
+        {zones.map((zone) => (
+          <Zone edges={zone.edges} bounds={bounds} />
         ))}
-      </Layer>
-      <Layer>
+
         {newShapeEdges.length > 0 && (
           <Shape
+            key={"new-shape"}
             sceneFunc={(context, shape) => {
               context.beginPath();
               context.moveTo(newShapeEdges[0].x, newShapeEdges[0].y);
@@ -226,6 +254,7 @@ const CanvasMap = () => {
         )}
         {newShapeEdges.map((edge) => (
           <Circle
+            key={edge}
             x={edge.x}
             y={edge.y}
             width={20}
@@ -233,7 +262,7 @@ const CanvasMap = () => {
             onClick={() => {
               if (newShapeEdges.length < 3) return;
               setNewShapeEdges([]);
-              setShapes([...shapes, { edges: newShapeEdges }]);
+              setZones([...zones, { edges: newShapeEdges }]);
             }}
           />
         ))}
