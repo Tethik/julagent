@@ -1,6 +1,12 @@
+import authenticate from "../../../data/auth";
+import { query } from "../../../data/db";
+
 export default function handler(req, res) {
-    res.statusCode = 200
-    res.setHeader('Content-Type', 'application/json')
-    res.json({ name: 'John Doe' })
+  if(!authenticate(req)) {
+      res.status(403);
   }
-  
+
+  const sql = `SELECT id, name, score FROM users;`;
+  const result = await query(sql);
+  res.json({ users: result.rows });  
+}
