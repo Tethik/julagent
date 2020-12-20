@@ -13,6 +13,7 @@ export default async function handler(req, res) {
     return;
   }
 
+  console.log(req.body);
   const { claim_key } = req.body;
 
   let sql = `SELECT id, name FROM zones WHERE claim_key = $1 AND live = true`;

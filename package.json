@@ -6,9 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "invite_user": "node admin/invite_user.js"
+    "invite_user": "node admin/invite_user.js",
+    "deploy": "ssh ubuntu@tomte.blacknode.se \"rm  -rf /home/ubuntu/*\" && rm all.zip && zip -r all.zip . && scp all.zip ubuntu@tomte.blacknode.se:~/ && ssh ubuntu@tomte.blacknode.se \"unzip -y all.zip && sh ~/entry.sh\""
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.32",
+    "@fortawesome/free-solid-svg-icons": "^5.15.1",
+    "@fortawesome/react-fontawesome": "^0.1.13",
     "autoprefixer": "^10.1.0",
     "cookie": "^0.4.1",
     "dotenv": "^8.2.0",

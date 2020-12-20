@@ -1,54 +1,51 @@
-import Head from "next/head";
 import styles from "./layout.module.css";
-import utilStyles from "../styles/utils.module.css";
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useState } from "react";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
 
-const name = "Your Name";
-export const siteTitle = "Next.js Sample Website";
-
-export default function Layout({ children, home }) {
+export default function Layout({ children }) {
+  const [expand, setExpand] = useState(false);
   return (
-    <div className={styles.container}>
-      <Head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"></meta>
-      </Head>
+    <>
       <header className={styles.header}>
-        {home ? (
-          <>
-            <img
-              src="/images/profile.jpg"
-              className={`${styles.headerHomeImage} ${utilStyles.borderCircle}`}
-              alt={name}
-            />
-            <h1 className={utilStyles.heading2Xl}>{name}</h1>
-          </>
-        ) : (
-          <>
-            <Link href="/">
-              <a>
-                <img
-                  src="/images/profile.jpg"
-                  className={`${styles.headerImage} ${utilStyles.borderCircle}`}
-                  alt={name}
-                />
-              </a>
+        <div className={styles.title}>
+          <FontAwesomeIcon
+            className={styles.hamburger}
+            icon={faBars}
+            rotation={expand ? 90 : 0}
+            color={"white"}
+            onClick={() => setExpand(!expand)}
+            size={"1x"}
+            width={24}
+          />
+          <Link href="/">Xmas Agent</Link>
+        </div>
+
+        <ul className={styles.menu} style={{ display: expand ? "block" : "none" }}>
+          <li>
+            <Link href="/map" onClick={() => setExpand(false)}>
+              🗺️ Karta
             </Link>
-            <h2 className={utilStyles.headingLg}>
-              <Link href="/">
-                <a className={utilStyles.colorInherit}>{name}</a>
-              </Link>
-            </h2>
-          </>
-        )}
+          </li>
+          <li>
+            <Link href="/highscores" onClick={() => setExpand(false)}>
+              🏆 HIGHSCORES
+            </Link>
+          </li>
+          <li>
+            <Link href="/shop" onClick={() => setExpand(false)}>
+              🏆 ?????
+            </Link>
+          </li>
+          <li>
+            <Link href="/messages" onClick={() => setExpand(false)}>
+              🏆 ?????
+            </Link>
+          </li>
+        </ul>
       </header>
       <main>{children}</main>
-      {!home && (
-        <div className={styles.backToHome}>
-          <Link href="/">
-            <a>← Back to home</a>
-          </Link>
-        </div>
-      )}
-    </div>
+    </>
   );
 }

@@ -95,15 +95,14 @@ const CanvasMap = () => {
 
 export default function Map() {
   return (
-    <>
+    <Layout>
       <Head>
         <title>Karta</title>
       </Head>
-      <body>
-        <div>
-          <CanvasMap />
-        </div>
-      </body>
-    </>
+
+      <div>
+        <CanvasMap />
+      </div>
+    </Layout>
   );
 }

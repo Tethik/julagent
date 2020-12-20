@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import useInvite from "../../client/swr/useInvite";
+import Layout from "../../components/layout";
 
 export default function Register() {
   const router = useRouter();
@@ -14,12 +15,12 @@ export default function Register() {
   if (isError) return <p>Något gick fel :(</p>;
 
   return (
-    <div>
+    <Layout>
       <p>Välkommen {user.name}!</p>
       <p>Intro text</p>
       <p>
         <Link href={"/"}>öppna hemliga appen</Link>
       </p>
-    </div>
+    </Layout>
   );
 }
