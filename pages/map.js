@@ -5,11 +5,11 @@ import useImage from "use-image";
 import Layout from "../components/layout";
 import useZones from "../client/swr/useZones";
 
-const MAP_HEIGHT = 660;
-const MAP_WIDTH = 1689;
+const MAP_HEIGHT = 2048;
+const MAP_WIDTH = 2048;
 
 const MapImage = () => {
-  const [image] = useImage("/images/karta.png");
+  const [image] = useImage("/images/FNBRC2S1Map.png");
   return <Image image={image} width={MAP_WIDTH} height={MAP_HEIGHT} />;
 };
 
@@ -20,20 +20,7 @@ const stageBoundsFunc = (pos) => {
   };
 };
 
-const Zone = ({ edges, bounds }) => {
-  const shapeRef = useRef(null);
-  const textRef = useRef(null);
-
-  console.log(bounds);
-  // useEffect(() => {
-  //   console.log(shapeRef.current);
-  //   shapeRef.current && shapeRef.current.cache({ ...edges[0], ...bounds, pixelRatio: 1 });
-  // }, [shapeRef, bounds, edges]);
-
-  // useEffect(() => {
-  //   textRef.current && textRef.current.cache();
-  // }, [textRef]);
-
+const Zone = ({ edges, bounds, claimer, name }) => {
   return (
     <>
       <Shape
@@ -45,7 +32,6 @@ const Zone = ({ edges, bounds }) => {
             context.lineTo(edge.x, edge.y);
           });
           context.closePath();
-          // (!) Konva specific method, it is very important
           context.fillStrokeShape(shape);
         }}
         fill="#333333"
@@ -55,11 +41,21 @@ const Zone = ({ edges, bounds }) => {
       <Text
         ref={(node) => node && node.cache()}
         align={"center"}
-        text={"okänd"}
+        text={name}
         x={edges.map((e) => e.x).reduce((p, v) => Math.min(p, v)) + 10}
         y={edges.map((e) => e.y).reduce((p, v) => p + v / edges.length, 0)}
         applyCache
       />
+      {claimer && (
+        <Text
+          ref={(node) => node && node.cache()}
+          align={"center"}
+          text={claimer}
+          x={edges.map((e) => e.x).reduce((p, v) => Math.min(p, v)) + 10}
+          y={edges.map((e) => e.y).reduce((p, v) => p + v / edges.length, 0) + 20}
+          applyCache
+        />
+      )}
     </>
   );
 };
@@ -67,16 +63,11 @@ const Zone = ({ edges, bounds }) => {
 const CanvasMap = () => {
   if (typeof window === "undefined") return null;
 
-  const { zones, isLoading, isError } = useZones();
+  const { zones } = useZones();
   const [bounds, setBounds] = useState({ width: window.innerWidth, height: window.innerHeight });
   const { width, height } = bounds;
 
   console.log(zones);
-
-  const canvasClick = (e) => {
-    const pos = e.currentTarget.getPointerPosition();
-    setNewShapeEdges([...newShapeEdges, pos]);
-  };
 
   useEffect(() => {
     const listener = window.addEventListener("resize", () => {
@@ -86,14 +77,7 @@ const CanvasMap = () => {
   }, []);
 
   return (
-    <Stage
-      width={width}
-      height={height}
-      dragBoundFunc={stageBoundsFunc}
-      onClick={(e) => drawing && canvasClick(e)}
-      draggable
-      transformsEnabled="position"
-    >
+    <Stage width={width} height={height} dragBoundFunc={stageBoundsFunc} draggable transformsEnabled="position">
       <Layer>
         <MapImage />
       </Layer>
@@ -101,7 +85,7 @@ const CanvasMap = () => {
       {zones && (
         <Layer>
           {zones.map((zone) => (
-            <Zone edges={zone.edges} bounds={bounds} />
+            <Zone edges={zone.shape.edges} bounds={bounds} {...zone} />
           ))}
         </Layer>
       )}

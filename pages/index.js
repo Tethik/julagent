@@ -20,8 +20,9 @@ export default function Home() {
         <p>
           Välkommen {user.name}. Du har {user.score} poäng!
         </p>
+        <Link href={"/info"}>Uppdrag</Link>
         <Link href={"/map"}>Öppna kartan</Link>
-        <Link href={"/shop"}>Affär</Link>
+        {/* <Link href={"/shop"}>Affär</Link> */}
         <Link href={"/messages"}>Meddelanden</Link>
         <Link href={"/scoreboard"}>HIGHSCORE</Link>
       </main>

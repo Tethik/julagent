@@ -5,8 +5,8 @@ import useImage from "use-image";
 import Layout from "../components/layout";
 import useZones from "../client/swr/fetcher";
 
-const MAP_HEIGHT = 1024;
-const MAP_WIDTH = 1024;
+const MAP_HEIGHT = 2048;
+const MAP_WIDTH = 2048;
 
 const MapImage = () => {
   const [image] = useImage("/images/FNBRC2S1Map.png");
@@ -31,6 +31,8 @@ const Zone = ({ edges, bounds }) => {
   useEffect(() => {
     textRef.current && textRef.current.cache();
   }, [textRef]);
+
+  if (!edges || edges.length === 0) return null;
 
   return (
     <>
@@ -65,19 +67,24 @@ const Zone = ({ edges, bounds }) => {
 const CanvasMap = () => {
   if (typeof window === "undefined") return null;
 
-  const { user, isLoading, isError } = useZones();
+  // const { user, isLoading, isError } = useZones();
 
-  const [zones, setZones] = useState(staticShapes);
+  // const [zones, setZones] = useState([]);
+  const [zone, setZone] = useState({ shape: { edges: [] } });
   const [newShapeEdges, setNewShapeEdges] = useState([]);
-  const [drawing, setDrawing] = useState(false);
+  const [drawing, setDrawing] = useState(true);
   const [bounds, setBounds] = useState({ width: window.innerWidth, height: window.innerHeight });
   const { width, height } = bounds;
 
-  console.log(zones);
+  const scale = 1.0;
 
   const canvasClick = (e) => {
-    const pos = e.currentTarget.getPointerPosition();
-    setNewShapeEdges([...newShapeEdges, pos]);
+    const pointerPos = e.currentTarget.getPointerPosition();
+    const mousePointTo = {
+      x: pointerPos.x / scale - e.currentTarget.attrs.x / scale,
+      y: pointerPos.y / scale - e.currentTarget.attrs.y / scale,
+    };
+    setNewShapeEdges([...newShapeEdges, mousePointTo]);
   };
 
   useEffect(() => {
@@ -87,75 +94,76 @@ const CanvasMap = () => {
     return () => window.removeEventListener("resize", listener);
   }, []);
 
+  console.log(JSON.stringify(zone));
+
   return (
-    <Stage
-      width={width}
-      height={height}
-      dragBoundFunc={stageBoundsFunc}
-      onClick={(e) => drawing && canvasClick(e)}
-      draggable
-      transformsEnabled="position"
-    >
-      <Layer>
-        <MapImage />
-        <Rect
-          width={100}
-          height={10}
-          fill={"white"}
-          onClick={(e) => {
-            setDrawing(!drawing);
-            e.cancelBubble = true;
-          }}
-        />
-        <Text
-          text={JSON.stringify({ drawing })}
-          onClick={(e) => {
-            setDrawing(!drawing);
-            e.cancelBubble = true;
-          }}
-        />
-      </Layer>
-
-      <Layer>
-        {zones.map((zone) => (
-          <Zone edges={zone.edges} bounds={bounds} />
-        ))}
-
-        {newShapeEdges.length > 0 && (
-          <Shape
-            key={"new-shape"}
-            sceneFunc={(context, shape) => {
-              context.beginPath();
-              context.moveTo(newShapeEdges[0].x, newShapeEdges[0].y);
-              newShapeEdges.slice(1).forEach((edge) => {
-                context.lineTo(edge.x, edge.y);
-              });
-              context.closePath();
-              // (!) Konva specific method, it is very important
-              context.fillStrokeShape(shape);
-            }}
-            fill="#00D2FF"
-            stroke="black"
-            opacity={0.6}
-            strokeWidth={2}
-          />
-        )}
-        {newShapeEdges.map((edge) => (
-          <Circle
-            key={edge}
-            x={edge.x}
-            y={edge.y}
-            width={20}
-            fill={"black"}
-            onClick={() => {
-              if (newShapeEdges.length < 3) return;
-              setNewShapeEdges([]);
-              setZones([...zones, { edges: newShapeEdges }]);
+    <>
+      <Stage
+        width={width}
+        height={height}
+        dragBoundFunc={stageBoundsFunc}
+        onClick={(e) => drawing && canvasClick(e)}
+        draggable
+      >
+        <Layer>
+          <MapImage />
+          <Rect
+            width={100}
+            height={10}
+            fill={"white"}
+            onClick={(e) => {
+              setDrawing(!drawing);
+              e.cancelBubble = true;
             }}
           />
-        ))}
-      </Layer>
-    </Stage>
+          <Text
+            text={JSON.stringify({ drawing })}
+            onClick={(e) => {
+              setDrawing(!drawing);
+              e.cancelBubble = true;
+            }}
+          />
+        </Layer>
+
+        <Layer>
+          <Zone edges={zone.shape.edges} bounds={bounds} />
+
+          {newShapeEdges.length > 0 && (
+            <Shape
+              key={"new-shape"}
+              sceneFunc={(context, shape) => {
+                context.beginPath();
+                context.moveTo(newShapeEdges[0].x, newShapeEdges[0].y);
+                newShapeEdges.slice(1).forEach((edge) => {
+                  context.lineTo(edge.x, edge.y);
+                });
+                context.closePath();
+                // (!) Konva specific method, it is very important
+                context.fillStrokeShape(shape);
+              }}
+              fill="#00D2FF"
+              stroke="black"
+              opacity={0.6}
+              strokeWidth={2}
+            />
+          )}
+          {newShapeEdges.map((edge) => (
+            <Circle
+              key={edge}
+              x={edge.x}
+              y={edge.y}
+              width={20}
+              fill={"black"}
+              onClick={() => {
+                if (newShapeEdges.length < 3) return;
+                setNewShapeEdges([]);
+                setZone({ name: "something", shape: { edges: newShapeEdges } });
+              }}
+            />
+          ))}
+        </Layer>
+      </Stage>
+    </>
   );
 };
 
