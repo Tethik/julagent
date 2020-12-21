@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "invite_user": "node admin/invite_user.js",
-    "deploy": "ssh ubuntu@tomte.blacknode.se \"rm  -rf /home/ubuntu/*\" && rm all.zip && zip -r all.zip . && scp all.zip ubuntu@tomte.blacknode.se:~/ && ssh ubuntu@tomte.blacknode.se \"unzip -y all.zip && sh ~/entry.sh\""
+    "deploy": "ssh ubuntu@tomte.blacknode.se \"rm  -rf /home/ubuntu/*\" && rm all.zip && zip -r all.zip . && scp all.zip ubuntu@tomte.blacknode.se:~/ && ssh ubuntu@tomte.blacknode.se \"unzip -o all.zip && sh ~/entry.sh\""
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
