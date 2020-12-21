@@ -1,10 +1,12 @@
 import Head from "next/head";
 import Link from "next/link";
 import useMe from "../client/swr/useMe";
+import useZones from "../client/swr/useZones";
 import Layout from "../components/layout";
 
 export default function Home() {
   const { user, isError, isLoading } = useMe();
+  const { zones } = useZones();
 
   if (isLoading) return <p>Laddar..</p>;
 
@@ -12,25 +14,16 @@ export default function Home() {
 
   return (
     <Layout>
-      <main>
-        <p>Välkommen {user.name.trim()}</p>
+      <div className="main">
+        <p>Hej {user.name.trim()}!</p>
         <p>Du har ⭐ {user.score} poäng!</p>
-        <p>Du har upptäckt 4 av 10 cyberzoner. Fortsätt leta!</p>
-        <ul>
-          <li>
-            <Link href={"/info"}>Ditt Uppdrag</Link>
-          </li>
-          <li>
-            <Link href={"/map"}>Öppna kartan</Link>
-          </li>
-          <li>
-            <Link href={"/messages"}>Meddelanden</Link>
-          </li>
-          <li>
-            <Link href={"/scoreboard"}>HIGHSCORES</Link>
-          </li>
-        </ul>
-      </main>
+        {zones && (
+          <p>
+            Du har upptäckt {zones.filter((z) => z.discovery_date).length} av {zones.length} cyberzoner.{" "}
+            {zones.filter((z) => z.discovery_date).length !== zones.length ? "Fortsätt leta!" : "Bra jobbat 🎉"}
+          </p>
+        )}
+      </div>
     </Layout>
   );
 }

@@ -16,7 +16,7 @@ export default async function handler(req, res) {
             THEN '???????'
           ELSE z.name
          END as name,
-         d.date as discovery_date§,
+         d.date as discovery_date,
          z.shape, u.name as claimer
   FROM zones z
   LEFT JOIN users u ON z.claimed_by = u.id

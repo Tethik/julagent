@@ -4,6 +4,7 @@ import { Stage, Layer, Image, Text, Rect, Shape, Circle } from "react-konva";
 import useImage from "use-image";
 import Layout from "../components/layout";
 import useZones from "../client/swr/useZones";
+import { useRouter } from "next/router";
 
 const MAP_HEIGHT = 2048;
 const MAP_WIDTH = 2048;
@@ -20,7 +21,20 @@ const stageBoundsFunc = (pos) => {
   };
 };
 
-const Zone = ({ edges, bounds, claimer, name }) => {
+function colorForZone({ claimer_color, discovery_date }) {
+  if (claimer_color) {
+    return claimer_color;
+  }
+  if (discovery_date) {
+    return "#666666";
+  }
+  return "#333333";
+}
+
+const Zone = ({ shape, claimer, claimer_color, name, discovery_date }) => {
+  const color = colorForZone({ claimer, claimer_color, discovery_date });
+  const { edges } = shape;
+
   return (
     <>
       <Shape
@@ -34,7 +48,7 @@ const Zone = ({ edges, bounds, claimer, name }) => {
           context.closePath();
           context.fillStrokeShape(shape);
         }}
-        fill="#333333"
+        fill={color}
         opacity={0.6}
         applyCache
       />
@@ -60,24 +74,67 @@ const Zone = ({ edges, bounds, claimer, name }) => {
   );
 };
 
-const CanvasMap = () => {
+const CanvasMap = ({ showZone }) => {
   if (typeof window === "undefined") return null;
 
   const { zones } = useZones();
   const [bounds, setBounds] = useState({ width: window.innerWidth, height: window.innerHeight });
   const { width, height } = bounds;
-
-  console.log(zones);
+  const stageRef = useRef();
+  const [scale, setScale] = useState(1.0);
 
   useEffect(() => {
     const listener = window.addEventListener("resize", () => {
       setBounds({ width: window.innerWidth, height: window.innerHeight });
     });
+
     return () => window.removeEventListener("resize", listener);
+
+    // const ro = new ResizeObserver((entries) => {
+    //   for (let entry of entries) {
+    //     setBounds({ width: entry.contentRect.width, height: entry.contentRect.height });
+    //   }
+    // });
+
+    // const el = document.querySelector("#canvas");
+    // setBounds({ width: el.innerWidth, height: el.innerHeight });
+    // ro.observe(document.querySelector("#canvas"));
+    // return () => ro.disconnect();
   }, []);
 
+  // Not sure how to move view to show specific zone
+  // useEffect(() => {
+  //   console.log(showZone);
+  //   console.log(zones);
+  //   console.log(stageRef.current);
+  //   if (showZone && zones && stageRef.current) {
+  //     const zone = zones.find((z) => {
+  //       console.log(z.id, showZone, z);
+  //       return z.id == showZone;
+  //     });
+  //     console.log(zone);
+
+  //     if (!zone) return;
+  //     const { x, y } = zone.shape.edges[0];
+
+  //     // stageRef.current.position({ x, y });
+
+  //     // stageRef.current.offsetX(x);
+  //     // stageRef.current.offsetX(y);
+  //   }
+  // }, [showZone, zones, stageRef.current]);
+
   return (
-    <Stage width={width} height={height} dragBoundFunc={stageBoundsFunc} draggable transformsEnabled="position">
+    <Stage
+      ref={stageRef}
+      width={width}
+      height={height}
+      dragBoundFunc={stageBoundsFunc}
+      draggable
+      transformsEnabled="position"
+      onWheel={() => setScale(scale * 0.1)}
+      scale={scale}
+    >
       <Layer>
         <MapImage />
       </Layer>
@@ -85,7 +142,7 @@ const CanvasMap = () => {
       {zones && (
         <Layer>
           {zones.map((zone) => (
-            <Zone key={`zone-${zone.id}`} edges={zone.shape.edges} bounds={bounds} {...zone} />
+            <Zone key={`zone-${zone.id}`} {...zone} />
           ))}
         </Layer>
       )}
@@ -94,14 +151,18 @@ const CanvasMap = () => {
 };
 
 export default function Map() {
+  const router = useRouter();
+
+  const { zone } = router.query;
+
   return (
     <Layout>
       <Head>
         <title>Karta</title>
       </Head>
 
-      <div>
-        <CanvasMap />
+      <div id="canvas" style={{ width: "100%", height: "100%" }}>
+        <CanvasMap showZone={zone} />
       </div>
     </Layout>
   );
