@@ -17,13 +17,11 @@ export default function Claim() {
     if (claimToken) {
       const zone = await claim(claimToken);
       setZone(zone);
-      setTimeout(() => router.replace(router.route, `/map?zone=${zone.id}`), 11000);
+      setTimeout(() => router.replace(`/map?zone=${zone.id}`), 11000);
     }
   }, [claimToken]);
 
   // Should replace the url from the history, so cant just press back.
-
-  console.log(zone);
 
   return (
     <Layout>

@@ -85,7 +85,7 @@ const CanvasMap = () => {
       {zones && (
         <Layer>
           {zones.map((zone) => (
-            <Zone edges={zone.shape.edges} bounds={bounds} {...zone} />
+            <Zone key={`zone-${zone.id}`} edges={zone.shape.edges} bounds={bounds} {...zone} />
           ))}
         </Layer>
       )}
