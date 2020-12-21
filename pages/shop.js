@@ -1,6 +1,6 @@
 import Layout from "../components/layout";
 
-export default async function handler(req, res) {
+export default function handler(req, res) {
   return (
     <Layout>
       <div className="main">
