@@ -17,7 +17,7 @@ export default function Claim() {
     if (claimToken) {
       const zone = await claim(claimToken);
       setZone(zone);
-      setTimeout(router.replace(router.route, `/map?zone=${zone.id}`), 11000);
+      setTimeout(() => router.replace(router.route, `/map?zone=${zone.id}`), 11000);
     }
   }, [claimToken]);
 
@@ -31,7 +31,10 @@ export default function Claim() {
         {zone === null && <p>Laddar...</p>}
         {zone && (
           <>
-            <p>Du har hittat cyberzonen "{zone.name}"!</p>
+            <p>
+              Du har hittat cyberzonen
+              <br /> <b>"{zone.name}"</b>!
+            </p>
             <p>Vänta medans cyberzonen erövras i ditt namn.</p>
             <Progressbar />{" "}
           </>
