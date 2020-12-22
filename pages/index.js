@@ -16,7 +16,7 @@ export default function Home() {
     <Layout>
       <div className="main">
         <p>Hej {user.name.trim()}!</p>
-        <p>Du har ⭐ {new Number(user.score).toFixed(2)} cyberpoäng!</p>
+        <p>Du har ⭐ {new Number(user.score).toFixed(0)} cyberpoäng!</p>
         {zones && (
           <>
             <p>

@@ -21,7 +21,7 @@ export default function FirstPost() {
                 <tr>
                   <td>{cool[i] || `${i + 1}.`}</td>
                   <td>{u.name}</td>
-                  <td align="right">{new Number(u.score).toFixed(2)} ⭐</td>
+                  <td align="right">{new Number(u.score).toFixed(0)} ⭐</td>
                 </tr>
               ))}
           </table>

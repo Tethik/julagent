@@ -14,17 +14,22 @@ export default function Layout({ children }) {
       <header className={styles.header}>
         <div className={styles.title}>
           {user && (
-            <FontAwesomeIcon
-              className={styles.hamburger}
-              icon={faBars}
-              rotation={expand ? 90 : 0}
-              color={"white"}
-              onClick={() => setExpand(!expand)}
-              size={"1x"}
-              width={24}
-            />
+            <div>
+              <FontAwesomeIcon
+                className={styles.hamburger}
+                icon={faBars}
+                rotation={expand ? 90 : 0}
+                color={"white"}
+                onClick={() => setExpand(!expand)}
+                size={"1x"}
+                width={24}
+              />
+            </div>
           )}
-          <Link href="/">Xmas Agent</Link>
+          <div>
+            <Link href="/">Xmas Agent</Link>
+          </div>
+          {user && <span className={styles.points}>{new Number(user.score).toFixed(0)}⭐</span>}
         </div>
 
         {user && (
