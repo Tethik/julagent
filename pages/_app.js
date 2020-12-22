@@ -8,7 +8,7 @@ export default function App({ Component, pageProps }) {
         <title>Tomtens Hemliga Agent</title>
         <link rel="icon" href="/favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"></meta>
-        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+        <link rel="manifest" href="manifest.webmanifest"></link>
       </Head>
       <Component {...pageProps} />
     </>

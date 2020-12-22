@@ -1,0 +1,15 @@
+{
+  "background_color": "red",
+  "description": "Hemliga appen för Tomtens agenter",
+  "display": "fullscreen",
+  "icons": [
+    {
+      "src": "santa.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "name": "Xmas Agent",
+  "short_name": "Xmas",
+  "start_url": "/"
+}
