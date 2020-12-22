@@ -5,6 +5,7 @@ import useImage from "use-image";
 import Layout from "../components/layout";
 import useZones from "../client/swr/useZones";
 import { useRouter } from "next/router";
+import useMe from "../client/swr/useMe";
 
 const MAP_HEIGHT = 2048;
 const MAP_WIDTH = 2048;
@@ -21,18 +22,18 @@ const stageBoundsFunc = (pos) => {
   };
 };
 
-function colorForZone({ claimer_color, discovery_date }) {
-  if (claimer_color) {
-    return claimer_color;
+function colorForZone({ claimed, discovery_date }) {
+  if (claimed) {
+    return "#0000FF";
   }
-  if (discovery_date) {
-    return "#666666";
+  if (!claimed && discovery_date) {
+    return "#FF0000";
   }
   return "#333333";
 }
 
-const Zone = ({ shape, claimer, claimer_color, name, discovery_date }) => {
-  const color = colorForZone({ claimer, claimer_color, discovery_date });
+const Zone = ({ shape, claimer, claimed, name, discovery_date }) => {
+  const color = colorForZone({ claimed, discovery_date });
   const { edges } = shape;
 
   return (
@@ -78,6 +79,7 @@ const CanvasMap = ({ showZone }) => {
   if (typeof window === "undefined") return null;
 
   const { zones } = useZones();
+  const { user } = useMe();
   const [bounds, setBounds] = useState({ width: window.innerWidth, height: window.innerHeight });
   const { width, height } = bounds;
   const stageRef = useRef();
@@ -142,7 +144,7 @@ const CanvasMap = ({ showZone }) => {
       {zones && (
         <Layer>
           {zones.map((zone) => (
-            <Zone key={`zone-${zone.id}`} {...zone} />
+            <Zone key={`zone-${zone.id}`} claimed={user && zone.claimer === user.name} {...zone} />
           ))}
         </Layer>
       )}

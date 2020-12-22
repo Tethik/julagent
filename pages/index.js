@@ -16,12 +16,19 @@ export default function Home() {
     <Layout>
       <div className="main">
         <p>Hej {user.name.trim()}!</p>
-        <p>Du har ⭐ {user.score} poäng!</p>
+        <p>Du har ⭐ {new Number(user.score).toFixed(2)} cyberpoäng!</p>
         {zones && (
-          <p>
-            Du har upptäckt {zones.filter((z) => z.discovery_date).length} av {zones.length} cyberzoner.{" "}
-            {zones.filter((z) => z.discovery_date).length !== zones.length ? "Fortsätt leta!" : "Bra jobbat 🎉"}
-          </p>
+          <>
+            <p>
+              🗺️ Du har upptäckt <b>{zones.filter((z) => z.discovery_date).length}</b> av <b>{zones.length}</b>{" "}
+              cyberzoner.{" "}
+              {zones.filter((z) => z.discovery_date).length !== zones.length ? "Fortsätt leta!" : "Bra jobbat 🎉"}
+            </p>
+            <p>
+              ⛳ Du har kontroll över <b>{zones.filter((z) => z.claimer === user.name).length}</b> av{" "}
+              <b>{zones.length}</b> cyberzoner.{" "}
+            </p>
+          </>
         )}
       </div>
     </Layout>

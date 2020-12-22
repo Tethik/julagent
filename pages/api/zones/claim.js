@@ -35,5 +35,19 @@ export default async function handler(req, res) {
     `;
 
   await query(sql, [zone.id, user.id, new Date(Date.now())]);
-  res.json({ zone });
+
+  // Check if first time claiming this zone, in which case bonus points.
+  sql = `SELECT COUNT(*) as count FROM claims WHERE user_id = $1 AND zone_id = $2`;
+  result = await query(sql, [user.id, zone.id]);
+
+  console.log(result);
+  console.log(result.rows);
+
+  let discovery_bonus = result.rows[0].count === "1" ? 20 : 0;
+  if (discovery_bonus) {
+    sql = `UPDATE users SET score = score + 20 WHERE id = $1`;
+    await query(sql, [user.id]);
+  }
+
+  res.json({ zone, discovery_bonus });
 }

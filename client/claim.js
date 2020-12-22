@@ -9,6 +9,6 @@ export default async function claim(claimToken) {
   };
 
   const response = await fetch(`/api/zones/claim`, options);
-  const { zone } = await response.json();
-  return zone;
+  const { zone, discovery_bonus } = await response.json();
+  return { zone, discovery_bonus };
 }

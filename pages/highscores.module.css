@@ -1,0 +1,20 @@
+.table tr {
+  border-bottom: 1px solid black;
+}
+
+.table tr:last-of-type {
+  border-bottom: 0;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table td {
+  padding: 5px;
+}
+
+.table tr {
+  border-bottom: 1px solid #000;
+}

@@ -12,10 +12,12 @@ export default function Claim() {
   if (!claimToken) return <p>Laddar...</p>;
 
   const [zone, setZone] = useState(null);
+  const [bonus, setBonus] = useState(null);
 
   useEffect(async () => {
     if (claimToken) {
-      const zone = await claim(claimToken);
+      const { zone, discovery_bonus } = await claim(claimToken);
+      setBonus(discovery_bonus);
       setZone(zone);
       setTimeout(() => router.replace(`/map?zone=${zone.id}`), 11000);
     }
@@ -30,11 +32,16 @@ export default function Claim() {
         {zone && (
           <>
             <p>
-              Du har hittat cyberzonen
+              Du har scannat cyberzonen
               <br /> <b>"{zone.name}"</b>!
             </p>
             <p>Vänta medans cyberzonen erövras i ditt namn.</p>
-            <Progressbar />{" "}
+            <Progressbar />
+            {bonus > 0 && (
+              <p>
+                <b>Upptäckarbonus:</b> ⭐ {bonus}
+              </p>
+            )}
           </>
         )}
       </div>
