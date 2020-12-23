@@ -31,3 +31,6 @@ yarn-error.log*
 .env*
 
 all.zip
+public/sw.js
+public/workbox*
+
