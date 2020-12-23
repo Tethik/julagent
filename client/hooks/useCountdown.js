@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const targetDate = new Date("2020-12-25 13:37:00");
+const targetDate = new Date("2020-12-25T13:37:00");
 
 export default function useCountdown() {
   const [left, setLeft] = useState(targetDate - new Date());
