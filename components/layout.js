@@ -4,9 +4,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import useMe from "../client/swr/useMe";
+import useCountdown from "../client/hooks/useCountdown";
 
 export default function Layout({ children }) {
   const [expand, setExpand] = useState(false);
+  const countdown = useCountdown();
   const { user, isError, isLoading } = useMe();
 
   return (
@@ -42,6 +44,11 @@ export default function Layout({ children }) {
             <li>
               <Link href="/highscores" onClick={() => setExpand(false)}>
                 🏆 HIGHSCORES
+              </Link>
+            </li>
+            <li>
+              <Link href="/countdown" onClick={() => setExpand(false)}>
+                <a>🔫 {countdown}</a>
               </Link>
             </li>
             <li>

@@ -27,7 +27,7 @@
 }
 
 .menu a {
-  color: white;
+  color: inherit;
   text-decoration: none;
   font-size: 17px;
   cursor: pointer;
@@ -35,6 +35,7 @@
 }
 
 .menu li {
+  color: white;
   padding: 14px 16px;
   list-style: none;
   display: block;
@@ -49,9 +50,9 @@
 }
 
 /* Add a grey background color on mouse-over */
-.menu li a:hover {
+.menu li:hover {
   background-color: #ddd;
-  color: black;
+  color: red;
 }
 
 /* Style the active link (or home/logo) */
