@@ -5,5 +5,5 @@ mv .env.prod .env.local
 yarn build
 screen -X -S web quit
 screen -X -S scoring quit
-screen -dmS web -L -Logfile /tmp/web-$(date +%x-%X).log yarn start
-screen -dmS scoring -L -Logfile /tmp/score-$(date +%x-%X).log node admin/scoring.js
+screen -dmS web -L -Logfile /var/log/jul/web-$(date +%d-%X).log yarn start
+screen -dmS scoring -L -Logfile /var/log/jul/score-$(date +%d-%X).log node admin/scoring.js
