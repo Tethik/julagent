@@ -15,9 +15,7 @@ export default function useCountdown() {
   const minutes = Math.ceil(seconds / 60) + (seconds % 60 === 0 ? 1 : 0);
   const hours = Math.ceil(minutes / 60) + (minutes % 60 === 0 ? 1 : 0);
 
-  const pad = (n) => (n < 10 ? "0" : "") + new Number(n).toFixed(0);
+  const pad = (n) => (n < 10 ? "0" : "") + new Number(Math.max(n, 0)).toFixed(0);
 
-  return `
-      ${pad(hours)}:${pad(minutes % 60)}:${pad(seconds % 60)}
-    `;
+  return `${pad(hours)}:${pad(minutes % 60)}:${pad(seconds % 60)}`;
 }

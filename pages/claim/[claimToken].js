@@ -19,7 +19,7 @@ export default function Claim() {
       const { zone, discovery_bonus } = await claim(claimToken);
       setBonus(discovery_bonus);
       setZone(zone);
-      setTimeout(() => router.replace(`/map?zone=${zone.id}`), 11000);
+      setTimeout(() => router.replace(`/map?zone=${zone.id}`), 22000);
     }
   }, [claimToken]);
 

@@ -8,7 +8,7 @@ function score(diff) {
   return diff / (60 * 60 * 1000);
 }
 
-setInterval(async () => {
+const scoring = async () => {
   let sql = `SELECT claims_counted_until FROM scoring`;
 
   let result = await query(sql);
@@ -36,6 +36,7 @@ setInterval(async () => {
             WHERE created_at <= $1 GROUP BY zone_id
         ) as c2)
     ) c ON z.id = c.zone_id
+  WHERE z.live = true
   `;
   result = await query(sql, [claims_counted_until]);
   console.log(result.rows);
@@ -97,4 +98,7 @@ setInterval(async () => {
   } catch (e) {
     console.error(e);
   }
-}, 1000 * 60 * 5);
+};
+
+scoring();
+setInterval(scoring, 1000 * 60 * 5);

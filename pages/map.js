@@ -22,9 +22,12 @@ const stageBoundsFunc = (pos) => {
   };
 };
 
-function colorForZone({ claimed, discovery_date }) {
+function colorForZone({ claimed, claimer, discovery_date }) {
   if (claimed) {
     return "#0000FF";
+  }
+  if (claimer && claimer.trim() === "grinchen") {
+    return "#00FF00";
   }
   if (!claimed && discovery_date) {
     return "#FF0000";
@@ -33,7 +36,7 @@ function colorForZone({ claimed, discovery_date }) {
 }
 
 const Zone = ({ shape, claimer, claimed, name, discovery_date }) => {
-  const color = colorForZone({ claimed, discovery_date });
+  const color = colorForZone({ claimed, claimer, discovery_date });
   const { edges } = shape;
 
   return (

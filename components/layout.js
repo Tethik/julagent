@@ -11,6 +11,30 @@ export default function Layout({ children }) {
   const countdown = useCountdown();
   const { user, isError, isLoading } = useMe();
 
+  if (user && user.shamed_at) {
+    const timeout = 120 * 60 * 1000;
+    const diff = new Date() - new Date(user.shamed_at);
+    const shamed = diff > 0 && diff < timeout;
+
+    if (shamed) {
+      const prutt = () => {
+        const i = Math.round(1 + Math.random() * 2);
+        var audio = new Audio(`/sounds/fart${i}.mp3`);
+        audio.play();
+      };
+      return (
+        <div style={{ padding: "25px" }}>
+          <h1 onMouseOver={prutt} onClick={prutt}>
+            Tomten har märkt att du fuskar. Aja baja! Nu får du timeout i{" "}
+            {new Number((timeout - diff) / 1000).toFixed(0)} sekunder. 💩💩
+            💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩
+            💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩 💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩
+          </h1>
+        </div>
+      );
+    }
+  }
+
   return (
     <>
       <header className={styles.header}>
@@ -48,7 +72,7 @@ export default function Layout({ children }) {
             </li>
             <li>
               <Link href="/countdown" onClick={() => setExpand(false)}>
-                <a>🔫 {countdown}</a>
+                🔫 00:00:00
               </Link>
             </li>
             <li>

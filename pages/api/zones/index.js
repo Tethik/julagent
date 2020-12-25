@@ -17,9 +17,16 @@ export default async function handler(req, res) {
           ELSE z.name
          END as name,
          d.date as discovery_date,
-         z.shape, u.name as claimer
+         z.shape, 
+         CASE 
+          WHEN f.claimed_by IS NOT NULL
+            THEN me.name
+          ELSE u.name
+         END as claimer
   FROM zones z
   LEFT JOIN users u ON z.claimed_by = u.id
+  LEFT JOIN users me ON me.id = $1
+  LEFT JOIN fusk_zones f ON f.zone_id = z.id AND f.claimed_by = $1
   LEFT JOIN 
     (
       SELECT user_id, zone_id, MIN(created_at) as date

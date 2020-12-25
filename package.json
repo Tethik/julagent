@@ -19,6 +19,7 @@
     "konva": "^7.2.1",
     "next": "^10.0.3",
     "next-pwa": "^5.0.0",
+    "node-fetch": "^2.6.1",
     "pg": "^8.5.1",
     "postcss": "^8.2.1",
     "postcss-flexbugs-fixes": "^5.0.2",
@@ -30,5 +31,8 @@
     "tailwindcss": "^2.0.2",
     "use-image": "^1.0.6",
     "uuidv4": "^6.2.6"
+  },
+  "devDependencies": {
+    "say": "^0.16.0"
   }
 }
