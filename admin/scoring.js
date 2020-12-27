@@ -100,5 +100,5 @@ const scoring = async () => {
   }
 };
 
-scoring();
-setInterval(scoring, 1000 * 60 * 5);
+// scoring();
+// setInterval(scoring, 1000 * 60 * 5);

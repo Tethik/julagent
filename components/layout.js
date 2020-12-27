@@ -75,16 +75,6 @@ export default function Layout({ children }) {
                 🔫 00:00:00
               </Link>
             </li>
-            <li>
-              <Link href="/shop" onClick={() => setExpand(false)}>
-                🛒 ?????
-              </Link>
-            </li>
-            <li>
-              <Link href="/messages" onClick={() => setExpand(false)}>
-                ✉️ ?????
-              </Link>
-            </li>
           </ul>
         )}
       </header>
